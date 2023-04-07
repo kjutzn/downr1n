@@ -386,8 +386,11 @@ trap _exit_handler EXIT
 # Dependencies
 # ============
 if [ "$os" = "Linux"  ]; then
-    chmod +x getSSHOnLinux.sh
+    chmod +x linux_fix.sh getSSHOnLinux.sh 
+    sleep 1
     sudo bash ./getSSHOnLinux.sh &
+    echo "fixing usb on linux"
+    sudo bash ./linux_fix.sh
 fi
 
 if [ "$os" = 'Linux' ]; then
@@ -873,7 +876,7 @@ if [ true ]; then
             mv work/patched_asr $mounted/usr/sbin/asr
             mv work/patched_restored_external $mounted/usr/local/bin/restored_external
     
-            hdiutil detach -force /tmp/SSHRD
+            hdiutil detach -force /tmp/SSHRD 
         else
     
             "$dir"/hfsplus work/ramdisk.dmg extract /usr/sbin/asr work/asr
