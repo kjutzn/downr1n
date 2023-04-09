@@ -390,7 +390,6 @@ if [ "$os" = "Linux"  ]; then
     sleep 1
     sudo bash ./getSSHOnLinux.sh &
     echo "fixing usb on linux"
-    sudo bash ./linux_fix.sh
 fi
 
 if [ "$os" = 'Linux' ]; then
@@ -899,6 +898,11 @@ if [ true ]; then
         "$dir"/gaster reset
         sleep 1
         "$dir"/irecovery -f "blobs/"$deviceid"-"$version".shsh2"
+        if [ "$os" = "Linux"  ]; then
+            echo "fixing usb on linux"
+            sudo bash ./linux_fix.sh
+            read -p "press enter if you unplug it and replug it"
+        fi
 
         if [ "$dontRestore" = "1" ]; then
             echo "finished creating boot files now you can --boot in order to get boot to the system"
@@ -908,18 +912,10 @@ if [ true ]; then
         echo "executing $dir/futurerestore -t blobs/$deviceid-$version.shsh2 --use-pwndfu --skip-blob --rdsk work/rdsk.im4p --rkrn work/krnl.im4p --latest-sep $HasBaseband $ipsw"
         sleep 1
         _runFuturerestore
-        echo -e "\n \n \n \n did the futurerestore gave you a error like ERROR: Unable to send iBSS component: Unable to upload data to device, write (yes) to try again write (no) to exit "
-        read -r answer
     
-        if [ "$answer" = 'yes' ]; then
-            echo "put your device on dfu mode"
-            "$dir"/gaster pwn
-            echo "running future restore again "
-            _runFuturerestore
-        elif [ "$answer" = 'no' ]; then
-            echo "thank you for use this"
-            exit;
-        fi
+        sleep 8
+        echo -e "\033[1;33mif futurerestore gave you a error execute this command:\033[0m \033[1m$dir/futurerestore -t blobs/$deviceid-$version.shsh2 --use-pwndfu --skip-blob --rdsk work/rdsk.im4p --rkrn work/krnl.im4p --latest-sep $HasBaseband $ipsw\033[0m"
+
     
         echo "finished to downgrade now you can boot using  --boot"
     fi
